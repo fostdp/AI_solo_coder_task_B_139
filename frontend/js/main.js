@@ -33,9 +33,10 @@ async function initApp() {
         initEventListeners();
         initMQTT();
         
-        if (typeof DynastyCompareModule !== 'undefined') DynastyCompareModule.init();
-        if (typeof PlantRootModule !== 'undefined') PlantRootModule.init();
-        if (typeof VirtualExperienceModule !== 'undefined') VirtualExperienceModule.init();
+        if (typeof CraftComparatorModule !== 'undefined') CraftComparatorModule.init();
+        if (typeof EraComparatorModule !== 'undefined') EraComparatorModule.init();
+        if (typeof VegetationProtectorModule !== 'undefined') VegetationProtectorModule.init();
+        if (typeof VRRammedEarthModule !== 'undefined') VRRammedEarthModule.init();
         
         await loadSegmentData(AppState.currentSegmentId);
         await loadDashboardData();
@@ -202,22 +203,26 @@ async function switchTab(tabId) {
             await updateChartsTab();
             break;
         case 'dynasty':
-            if (typeof DynastyCompareModule !== 'undefined' && !AppState.dynastyInited) {
-                DynastyCompareModule.loadDynastyList();
+            if (typeof CraftComparatorModule !== 'undefined' && !AppState.dynastyInited) {
+                CraftComparatorModule.loadDynastyList();
                 AppState.dynastyInited = true;
             }
             break;
         case 'crossera':
+            if (typeof EraComparatorModule !== 'undefined' && !AppState.crosseraInited) {
+                EraComparatorModule.init();
+                AppState.crosseraInited = true;
+            }
             break;
         case 'plants':
-            if (typeof PlantRootModule !== 'undefined' && !AppState.plantsInited) {
-                PlantRootModule.loadPlantList();
+            if (typeof VegetationProtectorModule !== 'undefined' && !AppState.plantsInited) {
+                VegetationProtectorModule.loadPlantList();
                 AppState.plantsInited = true;
             }
             break;
         case 'virtual':
-            if (typeof VirtualExperienceModule !== 'undefined' && !AppState.virtualInited) {
-                VirtualExperienceModule.loadPresets();
+            if (typeof VRRammedEarthModule !== 'undefined' && !AppState.virtualInited) {
+                VRRammedEarthModule.loadPresets();
                 AppState.virtualInited = true;
             }
             break;

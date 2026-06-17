@@ -22,6 +22,10 @@ from .routers import (
     plants,
     virtual
 )
+from .modules.craft_comparator import router as craft_router
+from .modules.era_comparator import router as era_router
+from .modules.vegetation_protector import router as vegetation_router
+from .modules.vr_rammed_earth import router as vr_router
 from .services.mqtt_alert import mqtt_alert_service
 from .adapters import get_adapter
 
@@ -91,6 +95,10 @@ app.include_router(statistics.router)
 app.include_router(dynasty.router)
 app.include_router(plants.router)
 app.include_router(virtual.router)
+app.include_router(craft_router)
+app.include_router(era_router)
+app.include_router(vegetation_router)
+app.include_router(vr_router)
 
 frontend_dir = Path(__file__).parent.parent / "frontend"
 if frontend_dir.exists():
