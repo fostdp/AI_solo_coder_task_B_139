@@ -1184,3 +1184,484 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============= 新Feature: 朝代对比 ============= */
+.dynasty-panel,
+.crossera-panel,
+.plants-panel,
+.virtual-panel {
+    color: #fff;
+}
+
+.dynasty-panel h2,
+.crossera-panel h2,
+.plants-panel h2,
+.virtual-panel h2 {
+    margin-bottom: 20px;
+    color: #fff;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.4);
+    padding-bottom: 10px;
+}
+
+.dynasty-controls,
+.crossera-controls,
+.plants-controls,
+.virtual-controls {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.dynasty-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    flex: 1;
+}
+
+.dynasty-checkbox,
+.plant-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dynasty-checkbox:hover,
+.plant-checkbox:hover {
+    background: rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.4);
+}
+
+.dynasty-checkbox input[type=checkbox],
+.plant-checkbox input[type=checkbox] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.dynasty-name {
+    font-weight: bold;
+    color: #fff;
+}
+
+.dynasty-period {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    margin-left: auto;
+}
+
+.control-row-inline {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-item label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.control-item input,
+.control-item select {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    width: 120px;
+}
+
+.btn-large {
+    padding: 15px 30px;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.dynasty-results h3,
+.crossera-results h3,
+.plants-results h3 {
+    color: #fff;
+    margin: 20px 0 15px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.data-table th {
+    background: rgba(102, 126, 234, 0.3);
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.badge-archaic {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #fff;
+}
+
+.badge-modern {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #fff;
+}
+
+/* ============= 新Feature: 植物防护 ============= */
+.plant-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    flex: 1;
+}
+
+.plant-icon {
+    font-size: 24px;
+}
+
+.plant-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.plant-name {
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+}
+
+.plant-detail {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-card {
+    border-color: rgba(152, 78, 163, 0.5);
+    background: rgba(152, 78, 163, 0.1);
+}
+
+.card-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.card-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.plants-visual-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.half-chart {
+    width: 100%;
+}
+
+#plant-root-canvas,
+#virtual-wall-canvas {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    width: 100%;
+    height: auto;
+}
+
+/* ============= 新Feature: 虚拟夯土体验 ============= */
+.virtual-desc {
+    background: linear-gradient(135deg, rgba(194, 154, 108, 0.15), rgba(139, 94, 60, 0.15));
+    border: 1px solid rgba(194, 154, 108, 0.3);
+    border-radius: 8px;
+    padding: 15px 20px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.preset-section,
+.mix-section,
+.craft-section {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.preset-section h4,
+.mix-section h4,
+.craft-section h4 {
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.dynasty-preset-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.dynasty-preset-btn {
+    background: linear-gradient(135deg, rgba(194, 154, 108, 0.25), rgba(139, 94, 60, 0.25));
+    border: 1px solid rgba(194, 154, 108, 0.5);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+}
+
+.dynasty-preset-btn:hover {
+    background: linear-gradient(135deg, rgba(194, 154, 108, 0.45), rgba(139, 94, 60, 0.45));
+    transform: translateY(-1px);
+}
+
+.material-sliders-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.material-slider-row {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.material-slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.material-name {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+}
+
+.material-unit {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.material-number {
+    width: 60px;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    text-align: right;
+}
+
+.material-range {
+    width: 100%;
+    margin: 4px 0;
+    cursor: pointer;
+}
+
+.material-range-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.mix-summary {
+    margin-top: 12px;
+    padding: 10px 15px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    justify-content: space-between;
+}
+
+.tamping-desc {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.quality-display {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 30px;
+    align-items: start;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.quality-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.quality-inner {
+    width: 130px;
+    height: 130px;
+    background: rgba(20, 20, 40, 0.95);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.quality-score {
+    font-size: 36px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+}
+
+.quality-rating {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.quality-details h3 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 13px;
+}
+
+.detail-row span {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.detail-row b {
+    color: #fff;
+    font-weight: 600;
+}
+
+.dynasty-match {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(194, 154, 108, 0.15), rgba(139, 94, 60, 0.15));
+    border-radius: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.suggestions-box {
+    background: rgba(26, 152, 80, 0.1);
+    border: 1px solid rgba(26, 152, 80, 0.3);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.suggestions-box h4 {
+    color: #1a9850;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.suggestions-box ul {
+    margin-left: 18px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* 响应式:小屏 */
+@media (max-width: 768px) {
+    .material-sliders-grid {
+        grid-template-columns: 1fr;
+    }
+    .plants-visual-row {
+        grid-template-columns: 1fr;
+    }
+    .quality-display {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+}

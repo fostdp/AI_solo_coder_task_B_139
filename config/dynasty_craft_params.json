@@ -1,0 +1,92 @@
+{
+  "dynasties": {
+    "QIN": {
+      "name": "秦代夯土",
+      "period": "前221-前206年",
+      "craft_name": "版筑夯土",
+      "description": "秦代版筑法，以木板为模，层层夯实，夯窝密集，密实度极高，加入糯米汁增强粘结",
+      "parameters": {
+        "compaction_ratio": 0.95,
+        "layer_thickness_mm": 70,
+        "tamping_energy_kj_per_m3": 120,
+        "binder_type": "sticky_rice_paste",
+        "binder_ratio": 0.03,
+        "aggregate_max_size_mm": 30,
+        "soil_clay_content": 0.25,
+        "moisture_at_compaction": 0.16,
+        "dry_density_g_cm3": 1.85
+      },
+      "erosion_properties": {
+        "hardness_multiplier": 1.35,
+        "moisture_resistance": 1.20,
+        "surface_cohesion_kpa": 85,
+        "erosion_rate_modifier": 0.70,
+        "crack_resistance": 1.30,
+        "freeze_thaw_resistance": 0.80
+      },
+      "historical_examples": ["咸阳宫遗址", "秦始皇陵", "万里长城(秦段)"]
+    },
+    "HAN": {
+      "name": "汉代夯土",
+      "period": "前206-220年",
+      "craft_name": "草拌夯土",
+      "description": "汉代在夯土中掺入麦草/麻丝增强抗拉性，层厚略增，夯打力度适中",
+      "parameters": {
+        "compaction_ratio": 0.88,
+        "layer_thickness_mm": 100,
+        "tamping_energy_kj_per_m3": 80,
+        "binder_type": "straw_hemp_fiber",
+        "binder_ratio": 0.05,
+        "aggregate_max_size_mm": 40,
+        "soil_clay_content": 0.22,
+        "moisture_at_compaction": 0.18,
+        "dry_density_g_cm3": 1.70
+      },
+      "erosion_properties": {
+        "hardness_multiplier": 1.05,
+        "moisture_resistance": 0.90,
+        "surface_cohesion_kpa": 60,
+        "erosion_rate_modifier": 1.10,
+        "crack_resistance": 1.40,
+        "freeze_thaw_resistance": 0.75
+      },
+      "historical_examples": ["汉长安城遗址", "汉阳陵", "未央宫遗址"]
+    },
+    "MING": {
+      "name": "明代夯土",
+      "period": "1368-1644年",
+      "craft_name": "灰土夯筑",
+      "description": "明代采用三合土(黄土+石灰+细砂)分层夯筑，石灰的胶凝作用大幅提升耐久性",
+      "parameters": {
+        "compaction_ratio": 0.91,
+        "layer_thickness_mm": 90,
+        "tamping_energy_kj_per_m3": 95,
+        "binder_type": "lime_soil_mix",
+        "binder_ratio": 0.08,
+        "aggregate_max_size_mm": 25,
+        "soil_clay_content": 0.20,
+        "moisture_at_compaction": 0.15,
+        "dry_density_g_cm3": 1.78
+      },
+      "erosion_properties": {
+        "hardness_multiplier": 1.25,
+        "moisture_resistance": 1.40,
+        "surface_cohesion_kpa": 78,
+        "erosion_rate_modifier": 0.80,
+        "crack_resistance": 1.15,
+        "freeze_thaw_resistance": 1.20
+      },
+      "historical_examples": ["明长城", "南京明城墙(夯土段)", "故宫台基"]
+    }
+  },
+  "simulation": {
+    "wind_speeds_for_comparison": [3, 5, 8, 10, 12, 15],
+    "moisture_levels_for_comparison": [2, 5, 8, 12, 18],
+    "default_duration_hours": 24,
+    "climate_scenarios": {
+      "arid": {"avg_wind": 8, "avg_moisture": 3, "description": "干旱区（西北）"},
+      "semi_arid": {"avg_wind": 5, "avg_moisture": 7, "description": "半干旱区（关中）"},
+      "humid": {"avg_wind": 3, "avg_moisture": 14, "description": "湿润区（江南）"}
+    }
+  }
+}

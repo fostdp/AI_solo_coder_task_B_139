@@ -1,0 +1,96 @@
+{
+  "base_materials": {
+    "soil": {
+      "name": "黄土",
+      "range": [40, 80],
+      "default": 65,
+      "unit": "%",
+      "effect": {
+        "erosion_rate_per_pct": 0.005,
+        "hardness_per_pct": 0.02,
+        "cohesion_per_pct": 0.3
+      }
+    },
+    "clay": {
+      "name": "粘土",
+      "range": [5, 30],
+      "default": 15,
+      "unit": "%",
+      "effect": {
+        "erosion_rate_per_pct": -0.008,
+        "hardness_per_pct": 0.04,
+        "cohesion_per_pct": 0.8
+      }
+    },
+    "sand": {
+      "name": "细砂",
+      "range": [5, 25],
+      "default": 10,
+      "unit": "%",
+      "effect": {
+        "erosion_rate_per_pct": 0.003,
+        "hardness_per_pct": -0.01,
+        "cohesion_per_pct": -0.2
+      }
+    },
+    "lime": {
+      "name": "石灰",
+      "range": [0, 15],
+      "default": 3,
+      "unit": "%",
+      "effect": {
+        "erosion_rate_per_pct": -0.015,
+        "hardness_per_pct": 0.06,
+        "cohesion_per_pct": 1.2
+      }
+    },
+    "rice_paste": {
+      "name": "糯米汁",
+      "range": [0, 8],
+      "default": 2,
+      "unit": "%",
+      "effect": {
+        "erosion_rate_per_pct": -0.012,
+        "hardness_per_pct": 0.03,
+        "cohesion_per_pct": 0.9
+      }
+    },
+    "straw": {
+      "name": "麦草",
+      "range": [0, 5],
+      "default": 1,
+      "unit": "%",
+      "effect": {
+        "erosion_rate_per_pct": -0.006,
+        "hardness_per_pct": 0.01,
+        "cohesion_per_pct": 0.5,
+        "crack_resistance_bonus": 0.15
+      }
+    },
+    "water": {
+      "name": "含水量",
+      "range": [8, 22],
+      "default": 16,
+      "unit": "%",
+      "effect": {
+        "compaction_effect": "optimal_at_16",
+        "too_dry_penalty": 0.3,
+        "too_wet_penalty": 0.4,
+        "optimal_range": [14, 18]
+      }
+    }
+  },
+  "tamping_presets": {
+    "light": {"name": "轻夯", "energy_kj_m3": 50, "compaction_factor": 0.85, "description": "省力但密实度低"},
+    "medium": {"name": "中夯", "energy_kj_m3": 80, "compaction_factor": 0.90, "description": "汉代常用力度"},
+    "heavy": {"name": "重夯", "energy_kj_m3": 120, "compaction_factor": 0.95, "description": "秦代标准力度"},
+    "extreme": {"name": "极重夯", "energy_kj_m3": 150, "compaction_factor": 0.97, "description": "极限夯打"}
+  },
+  "quality_ratings": {
+    "excellent": {"min_score": 0.85, "label": "优", "color": "#1a9850"},
+    "good": {"min_score": 0.70, "label": "良", "color": "#91cf60"},
+    "fair": {"min_score": 0.50, "label": "中", "color": "#fdae61"},
+    "poor": {"min_score": 0.30, "label": "差", "color": "#f46d43"},
+    "bad": {"min_score": 0, "label": "劣", "color": "#d73027"}
+  }
+}

@@ -17,7 +17,10 @@ from .routers import (
     reinforcement,
     alerts,
     wind_field,
-    statistics
+    statistics,
+    dynasty,
+    plants,
+    virtual
 )
 from .services.mqtt_alert import mqtt_alert_service
 from .adapters import get_adapter
@@ -85,6 +88,9 @@ app.include_router(reinforcement.router)
 app.include_router(alerts.router)
 app.include_router(wind_field.router)
 app.include_router(statistics.router)
+app.include_router(dynasty.router)
+app.include_router(plants.router)
+app.include_router(virtual.router)
 
 frontend_dir = Path(__file__).parent.parent / "frontend"
 if frontend_dir.exists():

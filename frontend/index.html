@@ -120,6 +120,10 @@
                     <button class="tab-btn" data-tab="windfield">💨 风场粒子</button>
                     <button class="tab-btn" data-tab="reinforcement">🏗️ 加固方案</button>
                     <button class="tab-btn" data-tab="charts">📈 数据图表</button>
+                    <button class="tab-btn" data-tab="dynasty">🏺 朝代工艺对比</button>
+                    <button class="tab-btn" data-tab="crossera">⚒️ 跨时代工程对比</button>
+                    <button class="tab-btn" data-tab="plants">🌱 植物根系防护</button>
+                    <button class="tab-btn" data-tab="virtual">👐 虚拟夯土体验</button>
                 </div>
 
                 <div class="tab-content active" id="3dTab">
@@ -262,6 +266,183 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-content" id="dynastyTab">
+                    <div class="dynasty-panel">
+                        <h2>🏺 朝代夯土工艺抗风蚀性能对比</h2>
+                        <div class="dynasty-controls">
+                            <div class="control-row">
+                                <label>选择朝代:</label>
+                                <div id="dynasty-select-container" class="dynasty-select-grid"></div>
+                            </div>
+                            <div class="control-row">
+                                <label>气候场景:</label>
+                                <select id="climate-scenario-select">
+                                    <option value="">默认气候</option>
+                                </select>
+                            </div>
+                            <div class="control-row-inline">
+                                <div class="control-item">
+                                    <label>风速 (m/s):</label>
+                                    <input type="number" id="dynasty-wind-speed" value="8" step="0.5" min="1" max="30">
+                                </div>
+                                <div class="control-item">
+                                    <label>含水量 (%):</label>
+                                    <input type="number" id="dynasty-moisture" value="5" step="0.5" min="1" max="30">
+                                </div>
+                                <div class="control-item">
+                                    <label>持续 (小时):</label>
+                                    <input type="number" id="dynasty-duration" value="24" step="1" min="1" max="720">
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="run-dynasty-compare">运行朝代对比</button>
+                        </div>
+                        <div class="dynasty-results">
+                            <h3>朝代性能对比表</h3>
+                            <table class="data-table">
+                                <thead><tr><th>排名</th><th>工艺</th><th>侵蚀率</th><th>最大深度</th><th>硬度</th><th>粘结力</th><th>抗水性</th><th>综合评分</th></tr></thead>
+                                <tbody id="dynasty-compare-tbody"></tbody>
+                            </table>
+                            <div class="chart-container">
+                                <h3>朝代性能对比图</h3>
+                                <canvas id="dynasty-compare-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="crosseraTab">
+                    <div class="crossera-panel">
+                        <h2>⚒️ 古代夯土 vs 现代加筋土跨时代工程对比</h2>
+                        <div class="crossera-controls">
+                            <div class="control-row-inline">
+                                <div class="control-item">
+                                    <label>风速 (m/s):</label>
+                                    <input type="number" id="crossera-wind-speed" value="8" step="0.5" min="1" max="30">
+                                </div>
+                                <div class="control-item">
+                                    <label>含水量 (%):</label>
+                                    <input type="number" id="crossera-moisture" value="5" step="0.5" min="1" max="30">
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="run-cross-era-compare">运行跨时代对比</button>
+                        </div>
+                        <div class="crossera-results">
+                            <h3>跨时代工程对比表</h3>
+                            <table class="data-table">
+                                <thead><tr><th>#</th><th>名称</th><th>侵蚀率</th><th>硬度</th><th>粘结力</th><th>环境影响</th><th>可逆性</th><th>文化真实</th><th>TOPSIS评分</th></tr></thead>
+                                <tbody id="cross-era-tbody"></tbody>
+                            </table>
+                            <div class="chart-container">
+                                <h3>多维度性能雷达图</h3>
+                                <canvas id="cross-era-radar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="plantsTab">
+                    <div class="plants-panel">
+                        <h2>🌱 植物根系对夯土墙风蚀防护效果仿真</h2>
+                        <div class="plants-controls">
+                            <div class="control-row">
+                                <label>选择植物种类 (可多选):</label>
+                                <div id="plant-select-container" class="plant-select-grid"></div>
+                            </div>
+                            <div class="control-row-inline">
+                                <div class="control-item">
+                                    <label>植被覆盖率 (%):</label>
+                                    <input type="range" id="plant-coverage" min="0" max="95" value="70" step="5">
+                                    <span id="plant-coverage-val">70%</span>
+                                </div>
+                                <div class="control-item">
+                                    <label>墙体高度 (m):</label>
+                                    <input type="number" id="plant-wall-height" value="2.5" step="0.1" min="1" max="10">
+                                </div>
+                                <div class="control-item">
+                                    <label>风速 (m/s):</label>
+                                    <input type="number" id="plant-wind-speed" value="8" step="0.5" min="1" max="30">
+                                </div>
+                                <div class="control-item">
+                                    <label>含水量 (%):</label>
+                                    <input type="number" id="plant-moisture" value="5" step="0.5" min="1" max="30">
+                                </div>
+                                <div class="control-item">
+                                    <label>季节:</label>
+                                    <select id="plant-season">
+                                        <option value="spring">春季</option>
+                                        <option value="summer" selected>夏季</option>
+                                        <option value="autumn">秋季</option>
+                                        <option value="winter">冬季</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="run-plant-sim">运行植物防护仿真</button>
+                        </div>
+                        <div class="plants-results">
+                            <div id="plant-summary"></div>
+                            <h3>各植物防护效果</h3>
+                            <table class="data-table">
+                                <thead><tr><th>植物</th><th>粘聚力提升</th><th>风速降低</th><th>侵蚀降低</th><th>保水率</th><th>表面绑定</th></tr></thead>
+                                <tbody id="plant-effects-tbody"></tbody>
+                            </table>
+                            <div class="plants-visual-row">
+                                <div class="chart-container half-chart">
+                                    <h3>防护效果对比</h3>
+                                    <canvas id="plant-protection-chart"></canvas>
+                                </div>
+                                <div class="chart-container half-chart">
+                                    <h3>根系加固示意图</h3>
+                                    <canvas id="plant-root-canvas" width="500" height="400"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="virtualTab">
+                    <div class="virtual-panel">
+                        <h2>👐 虚拟夯土制作体验</h2>
+                        <div class="virtual-desc">调配材料比例与夯打力度，观察你的夯土墙抗风蚀性能</div>
+                        <div class="virtual-controls">
+                            <div class="preset-section">
+                                <h4>📜 古代工艺预设</h4>
+                                <div id="dynasty-preset-buttons" class="dynasty-preset-row"></div>
+                            </div>
+                            <div class="mix-section">
+                                <h4>🧱 材料配比</h4>
+                                <div id="material-sliders" class="material-sliders-grid"></div>
+                                <div id="mix-summary" class="mix-summary"></div>
+                            </div>
+                            <div class="craft-section">
+                                <h4>🔨 施工参数</h4>
+                                <div class="control-row-inline">
+                                    <div class="control-item">
+                                        <label>夯打力度:</label>
+                                        <select id="tamping-preset-select"></select>
+                                    </div>
+                                    <div class="control-item">
+                                        <label>墙体高度 (m):</label>
+                                        <input type="number" id="virtual-wall-height" value="2.5" step="0.1" min="1" max="10">
+                                    </div>
+                                    <div class="control-item">
+                                        <label>测试风速 (m/s):</label>
+                                        <input type="number" id="virtual-wind-speed" value="8" step="0.5" min="1" max="30">
+                                    </div>
+                                </div>
+                                <div id="tamping-desc" class="tamping-desc"></div>
+                            </div>
+                            <button class="btn-primary btn-large" id="run-evaluate">🏗️ 开始夯筑评估</button>
+                        </div>
+                        <div class="virtual-results">
+                            <div id="evaluation-result"></div>
+                            <div class="chart-container">
+                                <h3>夯土墙效果预览</h3>
+                                <canvas id="virtual-wall-canvas" width="600" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -282,6 +463,9 @@
     <script src="js/erosion_panel.js"></script>
     <script src="js/windField.js"></script>
     <script src="js/dataCharts.js"></script>
+    <script src="js/dynasty_compare.js"></script>
+    <script src="js/plant_root.js"></script>
+    <script src="js/virtual_experience.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -33,6 +33,10 @@ async function initApp() {
         initEventListeners();
         initMQTT();
         
+        if (typeof DynastyCompareModule !== 'undefined') DynastyCompareModule.init();
+        if (typeof PlantRootModule !== 'undefined') PlantRootModule.init();
+        if (typeof VirtualExperienceModule !== 'undefined') VirtualExperienceModule.init();
+        
         await loadSegmentData(AppState.currentSegmentId);
         await loadDashboardData();
         await loadAlerts();
@@ -188,7 +192,7 @@ async function switchTab(tabId) {
         case 'erosion':
             await updateErosionTab();
             break;
-        case 'wind':
+        case 'windfield':
             await updateWindTab();
             break;
         case 'reinforcement':
@@ -196,6 +200,26 @@ async function switchTab(tabId) {
             break;
         case 'charts':
             await updateChartsTab();
+            break;
+        case 'dynasty':
+            if (typeof DynastyCompareModule !== 'undefined' && !AppState.dynastyInited) {
+                DynastyCompareModule.loadDynastyList();
+                AppState.dynastyInited = true;
+            }
+            break;
+        case 'crossera':
+            break;
+        case 'plants':
+            if (typeof PlantRootModule !== 'undefined' && !AppState.plantsInited) {
+                PlantRootModule.loadPlantList();
+                AppState.plantsInited = true;
+            }
+            break;
+        case 'virtual':
+            if (typeof VirtualExperienceModule !== 'undefined' && !AppState.virtualInited) {
+                VirtualExperienceModule.loadPresets();
+                AppState.virtualInited = true;
+            }
             break;
     }
 }

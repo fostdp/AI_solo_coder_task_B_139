@@ -1,0 +1,98 @@
+{
+  "plant_species": {
+    "GRASS_SHORT": {
+      "name": "短生草本",
+      "name_zh": "狗尾草/牛筋草",
+      "category": "herb",
+      "root_depth_mm": 150,
+      "root_density_roots_per_dm2": 80,
+      "root_tensile_strength_mpa": 15,
+      "root_diameter_mm": 0.5,
+      "canopy_height_mm": 200,
+      "canopy_coverage_pct": 60,
+      "growth_season_months": [4, 5, 6, 7, 8, 9],
+      "water_requirement_mm_per_year": 300,
+      "protection": {
+        "soil_cohesion_increase_kpa": 5.0,
+        "wind_speed_reduction_factor": 0.15,
+        "moisture_retention_factor": 0.10,
+        "erosion_rate_reduction_pct": 18,
+        "surface_binding_strength": 0.20
+      }
+    },
+    "GRASS_DEEP": {
+      "name": "深根草本",
+      "name_zh": "白羊草/芨芨草",
+      "category": "herb",
+      "root_depth_mm": 400,
+      "root_density_roots_per_dm2": 60,
+      "root_tensile_strength_mpa": 25,
+      "root_diameter_mm": 0.8,
+      "canopy_height_mm": 500,
+      "canopy_coverage_pct": 70,
+      "growth_season_months": [3, 4, 5, 6, 7, 8, 9, 10],
+      "water_requirement_mm_per_year": 400,
+      "protection": {
+        "soil_cohesion_increase_kpa": 8.0,
+        "wind_speed_reduction_factor": 0.25,
+        "moisture_retention_factor": 0.15,
+        "erosion_rate_reduction_pct": 30,
+        "surface_binding_strength": 0.35
+      }
+    },
+    "SHRUB": {
+      "name": "灌木",
+      "name_zh": "沙棘/柠条",
+      "category": "shrub",
+      "root_depth_mm": 1200,
+      "root_density_roots_per_dm2": 30,
+      "root_tensile_strength_mpa": 40,
+      "root_diameter_mm": 3.0,
+      "canopy_height_mm": 1500,
+      "canopy_coverage_pct": 50,
+      "growth_season_months": [4, 5, 6, 7, 8, 9],
+      "water_requirement_mm_per_year": 350,
+      "protection": {
+        "soil_cohesion_increase_kpa": 15.0,
+        "wind_speed_reduction_factor": 0.40,
+        "moisture_retention_factor": 0.20,
+        "erosion_rate_reduction_pct": 45,
+        "surface_binding_strength": 0.50
+      }
+    },
+    "TREE": {
+      "name": "乔木",
+      "name_zh": "侧柏/国槐",
+      "category": "tree",
+      "root_depth_mm": 3000,
+      "root_density_roots_per_dm2": 10,
+      "root_tensile_strength_mpa": 60,
+      "root_diameter_mm": 15.0,
+      "canopy_height_mm": 8000,
+      "canopy_coverage_pct": 80,
+      "growth_season_months": [4, 5, 6, 7, 8, 9, 10],
+      "water_requirement_mm_per_year": 600,
+      "protection": {
+        "soil_cohesion_increase_kpa": 25.0,
+        "wind_speed_reduction_factor": 0.55,
+        "moisture_retention_factor": 0.30,
+        "erosion_rate_reduction_pct": 60,
+        "surface_binding_strength": 0.70
+      }
+    }
+  },
+  "simulation": {
+    "root_soil_interaction_model": "Wu-Waldron",
+    "root_reinforcement_factor": 1.2,
+    "seasonal_decay_factor": 0.3,
+    "max_coverage_pct": 90,
+    "wind_break_distance_ratio": 10,
+    "canopy_porosity_default": 0.4,
+    "combinations": {
+      "grass_shrub": {"code": "GRASS_SHRUB", "erosion_reduction_bonus_pct": 5},
+      "grass_tree": {"code": "GRASS_TREE", "erosion_reduction_bonus_pct": 8},
+      "shrub_tree": {"code": "SHRUB_TREE", "erosion_reduction_bonus_pct": 6},
+      "all_three": {"code": "ALL_THREE", "erosion_reduction_bonus_pct": 12}
+    }
+  }
+}

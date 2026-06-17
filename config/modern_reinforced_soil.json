@@ -1,0 +1,77 @@
+{
+  "modern_reinforced_soil": {
+    "GEOSYNTHETIC": {
+      "name": "土工格栅加筋土",
+      "era": "现代",
+      "description": "土工格栅水平铺设，层间压实，显著增强抗拉与整体稳定性",
+      "parameters": {
+        "compaction_ratio": 0.93,
+        "reinforcement_type": "geogrid",
+        "reinforcement_spacing_mm": 300,
+        "reinforcement_tensile_strength_kn_m": 50,
+        "soil_type": "graded_gravel",
+        "dry_density_g_cm3": 2.05
+      },
+      "erosion_properties": {
+        "hardness_multiplier": 1.60,
+        "moisture_resistance": 1.50,
+        "surface_cohesion_kpa": 120,
+        "erosion_rate_modifier": 0.45,
+        "crack_resistance": 2.50,
+        "freeze_thaw_resistance": 1.80
+      }
+    },
+    "FIBER": {
+      "name": "纤维加筋土",
+      "era": "现代",
+      "description": "随机分布的合成纤维增强土体抗拉和抗裂性能",
+      "parameters": {
+        "compaction_ratio": 0.90,
+        "reinforcement_type": "polypropylene_fiber",
+        "fiber_length_mm": 30,
+        "fiber_content_pct": 0.3,
+        "soil_type": "clay_loam",
+        "dry_density_g_cm3": 1.82
+      },
+      "erosion_properties": {
+        "hardness_multiplier": 1.20,
+        "moisture_resistance": 1.10,
+        "surface_cohesion_kpa": 85,
+        "erosion_rate_modifier": 0.75,
+        "crack_resistance": 1.80,
+        "freeze_thaw_resistance": 1.10
+      }
+    },
+    "CEMENT": {
+      "name": "水泥稳定土",
+      "era": "现代",
+      "description": "水泥与土拌合压实，水化反应生成胶凝体，强度高但不可逆",
+      "parameters": {
+        "compaction_ratio": 0.95,
+        "reinforcement_type": "cement_stabilization",
+        "cement_content_pct": 6,
+        "soil_type": "sandy_clay",
+        "dry_density_g_cm3": 1.95
+      },
+      "erosion_properties": {
+        "hardness_multiplier": 2.20,
+        "moisture_resistance": 1.80,
+        "surface_cohesion_kpa": 180,
+        "erosion_rate_modifier": 0.25,
+        "crack_resistance": 0.90,
+        "freeze_thaw_resistance": 1.50
+      }
+    }
+  },
+  "comparison_metrics": {
+    "weights": {
+      "erosion_resistance": 0.30,
+      "environmental_compatibility": 0.20,
+      "reversibility": 0.15,
+      "cost_efficiency": 0.15,
+      "cultural_authenticity": 0.20
+    },
+    "benefit_criteria": ["erosion_resistance", "environmental_compatibility", "reversibility", "cultural_authenticity"],
+    "cost_criteria": ["cost_efficiency"]
+  }
+}
