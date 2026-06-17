@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古代咸阳宫夯土墙抗风蚀仿真系统</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/paho-mqtt@1.1.0/paho-mqtt.min.js"></script>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>正在加载三维模型...</p>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <header class="header">
+            <div class="header-left">
+                <h1>🏛️ 古代咸阳宫夯土墙抗风蚀仿真系统</h1>
+                <span class="subtitle">Qin Xianyang Palace Rammed Earth Wall Erosion Simulation</span>
+            </div>
+            <div class="header-right">
+                <div class="status-indicator">
+                    <span class="status-dot" id="connectionStatus"></span>
+                    <span id="connectionText">连接中...</span>
+                </div>
+                <div class="time-display" id="currentTime"></div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <div class="panel">
+                    <h3>📋 墙体段列表</h3>
+                    <div class="segment-list" id="wallSegmentList">
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>📊 当前墙体: <span id="currentSegmentName" style="color: #f97316;">加载中...</span></h3>
+                    <div class="monitor-data" id="monitorData">
+                        <div class="data-item">
+                            <span class="data-label">风蚀深度</span>
+                            <span class="data-value" id="currentErosionDepth">0.00 mm</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">风蚀速率</span>
+                            <span class="data-value" id="currentErosionRate">0.00 mm/年</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">风速</span>
+                            <span class="data-value" id="currentWindSpeed">0.0 m/s</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">风向</span>
+                            <span class="data-value" id="currentWindDirection">0°</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">土体含水量</span>
+                            <span class="data-value" id="currentMoisture">0.0%</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">表面硬度</span>
+                            <span class="data-value" id="currentHardness">0.0 MPa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>📈 系统概览</h3>
+                    <div class="dashboard-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">总墙体段</span>
+                            <span class="stat-value" id="totalSegments">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">高风险段</span>
+                            <span class="stat-value text-danger" id="highRiskSegments">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">平均侵蚀率</span>
+                            <span class="stat-value" id="avgErosionRate">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">活跃告警</span>
+                            <span class="stat-value text-warning" id="activeAlerts">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>⚠️ 告警信息</h3>
+                    <div class="alert-list" id="alertsList">
+                        <p class="no-alert">暂无告警</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>⚙️ 快捷操作</h3>
+                    <div class="action-buttons">
+                        <button class="btn-action" id="btnRefresh">🔄 刷新数据</button>
+                        <button class="btn-action" id="btnGenerateHistory">📊 生成历史数据</button>
+                        <button class="btn-action" id="btnTestMQTT">🔔 测试MQTT</button>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="3d">🎨 三维模型</button>
+                    <button class="tab-btn" data-tab="erosion">🌪️ 风蚀仿真</button>
+                    <button class="tab-btn" data-tab="windfield">💨 风场粒子</button>
+                    <button class="tab-btn" data-tab="reinforcement">🏗️ 加固方案</button>
+                    <button class="tab-btn" data-tab="charts">📈 数据图表</button>
+                </div>
+
+                <div class="tab-content active" id="3dTab">
+                    <div class="viewer-container">
+                        <div id="threejsContainer"></div>
+                        <div class="viewer-controls">
+                            <div class="control-group">
+                                <label>
+                                    <input type="checkbox" id="showErosion" checked>
+                                    显示风蚀区域
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="showWindField">
+                                    显示风场粒子
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="showWireframe">
+                                    线框模式
+                                </label>
+                            </div>
+                            <div class="control-group">
+                                <label>
+                                    侵蚀程度: 
+                                    <input type="range" id="erosionIntensity" min="0" max="100" value="50">
+                                </label>
+                            </div>
+                            <div class="legend">
+                                <h4>风蚀程度图例</h4>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #1a9850;"></span>
+                                    <span>轻微 (0-0.2mm/年)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #fdae61;"></span>
+                                    <span>中等 (0.2-0.5mm/年)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #d73027;"></span>
+                                    <span>严重 (>0.5mm/年)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="erosionTab">
+                    <div class="simulation-panel">
+                        <h2>🌪️ 风蚀仿真模拟</h2>
+                        <div class="simulation-controls">
+                            <div class="control-row">
+                                <label>预测年限:</label>
+                                <input type="number" id="simulationYears" value="10" min="1" max="50">
+                            </div>
+                            <div class="control-row">
+                                <label>气候变化因子:</label>
+                                <input type="number" id="climateFactor" value="1.0" step="0.1" min="0.5" max="2.0">
+                            </div>
+                            <button class="btn-primary" id="btnSimulate">运行仿真</button>
+                        </div>
+                        <div class="simulation-results" id="simulationResults">
+                            <p>点击"运行仿真"查看风蚀预测结果</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="windTab">
+                    <div class="windfield-panel">
+                        <h2>💨 风场流线粒子可视化</h2>
+                        <div class="windfield-controls">
+                            <div class="control-row">
+                                <label>粒子数量:</label>
+                                <input type="range" id="particleCount" min="50" max="500" value="300">
+                            </div>
+                        </div>
+                        <div id="windFieldContainer" style="position: relative; height: 500px;">
+                            <canvas id="windFieldCanvas" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="reinforcementTab">
+                    <div class="reinforcement-panel">
+                        <h2>🏗️ 加固方案优化 (TOPSIS)</h2>
+                        <div class="reinforcement-controls">
+                            <div class="control-row">
+                                <label>土体含水量 (%):</label>
+                                <input type="number" id="evalMoisture" value="10" step="0.5" min="1" max="30">
+                            </div>
+                            <div class="control-row">
+                                <label>表面硬度 (MPa):</label>
+                                <input type="number" id="evalHardness" value="2" step="0.1" min="0.5" max="5">
+                            </div>
+                            <div class="control-row">
+                                <label>施工压力 (MPa):</label>
+                                <input type="number" id="evalPressure" value="0.5" step="0.1" min="0.1" max="2">
+                            </div>
+                            <button class="btn-primary" id="btnEvaluate">TOPSIS评估</button>
+                        </div>
+                        <div class="evaluation-results" id="evaluationResults">
+                            <p>点击"TOPSIS评估"查看加固方案优化结果</p>
+                        </div>
+                        <div class="reinforcement-plans-list" id="reinforcementPlansList"></div>
+                        <div class="charts-row">
+                            <div class="chart-container">
+                                <h5>加固方案对比</h5>
+                                <canvas id="reinforcementChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="chartsTab">
+                    <div class="charts-panel">
+                        <h2>📈 数据趋势分析</h2>
+                        <div class="charts-grid">
+                            <div class="chart-container">
+                                <h3>风蚀深度趋势</h3>
+                                <canvas id="erosionTrendChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>风速变化趋势</h3>
+                                <canvas id="windSpeedChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>各段风蚀速率对比</h3>
+                                <canvas id="segmentComparisonChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>风险等级分布</h3>
+                                <canvas id="riskDistributionChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>含水量变化</h3>
+                                <canvas id="moistureChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>硬度变化趋势</h3>
+                                <canvas id="hardnessChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <div id="alertPanel" class="alert-panel">
+        <div class="alert-panel-header">
+            <h3>⚠️ 告警详情</h3>
+            <button id="alertCloseBtn" class="alert-close">&times;</button>
+        </div>
+        <div class="alert-panel-content" id="alertPanelContent">
+            暂无告警详情
+        </div>
+    </div>
+
+    <script src="js/rammed_earth_3d.js"></script>
+    <script src="js/erosion_panel.js"></script>
+    <script src="js/windField.js"></script>
+    <script src="js/dataCharts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
