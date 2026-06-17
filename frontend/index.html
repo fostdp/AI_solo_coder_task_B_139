@@ -403,16 +403,33 @@
                 <div class="tab-content" id="virtualTab">
                     <div class="virtual-panel">
                         <h2>👐 虚拟夯土制作体验</h2>
-                        <div class="virtual-desc">调配材料比例与夯打力度，观察你的夯土墙抗风蚀性能</div>
+                        <div class="virtual-desc">调配材料比例与夯打力度，观察你的夯土墙抗风蚀性能。<b>提示：</b>固体材料建议接近100%，含水量14-18%最优。</div>
                         <div class="virtual-controls">
                             <div class="preset-section">
                                 <h4>📜 古代工艺预设</h4>
                                 <div id="dynasty-preset-buttons" class="dynasty-preset-row"></div>
+                                <div id="dynasty-preset-info" class="dynasty-preset-info"></div>
                             </div>
                             <div class="mix-section">
                                 <h4>🧱 材料配比</h4>
+                                <div class="mix-toolbar">
+                                    <button class="btn-small btn-secondary" id="btn-reset-mix">↺ 重置默认</button>
+                                    <button class="btn-small btn-secondary" id="btn-normalize-mix">⚖️ 自动归一化</button>
+                                    <button class="btn-small btn-secondary" id="btn-recommend-qin">🏛️ 推荐秦代</button>
+                                    <button class="btn-small btn-secondary" id="btn-recommend-balanced">⭐ 推荐均衡</button>
+                                </div>
                                 <div id="material-sliders" class="material-sliders-grid"></div>
-                                <div id="mix-summary" class="mix-summary"></div>
+                                <div class="mix-visual-row">
+                                    <div class="mix-pie-wrap">
+                                        <canvas id="mix-pie-chart" width="200" height="200"></canvas>
+                                    </div>
+                                    <div id="mix-summary" class="mix-summary"></div>
+                                </div>
+                                <div class="live-quality-bar">
+                                    <div class="lq-label">实时质量预判：</div>
+                                    <div class="lq-bar"><div id="lq-bar-fill" class="lq-bar-fill"></div></div>
+                                    <div id="lq-bar-text" class="lq-bar-text">--</div>
+                                </div>
                             </div>
                             <div class="craft-section">
                                 <h4>🔨 施工参数</h4>

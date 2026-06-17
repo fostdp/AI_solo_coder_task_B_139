@@ -3,75 +3,150 @@
     "GEOSYNTHETIC": {
       "name": "土工格栅加筋土",
       "era": "现代",
-      "description": "土工格栅水平铺设，层间压实，显著增强抗拉与整体稳定性",
+      "standard_reference": "GB/T 50290-2014《土工合成材料应用技术规范》, JTG/T D32-2012《公路土工合成材料应用技术规范》",
+      "description": "双向拉伸塑料土工格栅，层间距300mm水平铺设，增强土体抗拉与整体稳定性",
       "parameters": {
         "compaction_ratio": 0.93,
-        "reinforcement_type": "geogrid",
+        "layer_thickness_mm": 300,
+        "reinforcement_type": "biaxial_geogrid_pp",
         "reinforcement_spacing_mm": 300,
         "reinforcement_tensile_strength_kn_m": 50,
-        "soil_type": "graded_gravel",
-        "dry_density_g_cm3": 2.05
+        "soil_type": "级配碎石",
+        "soil_type_std_code": "GP-GM",
+        "cement_content_pct": 0,
+        "fiber_content_pct": 0,
+        "geogrid_usage_pct_per_layer": 100,
+        "dry_density_g_cm3": 2.05,
+        "optimum_moisture_pct": 8,
+        "cost_yuan_per_m3": 380,
+        "construction_difficulty": 2,
+        "reversibility_level": 3,
+        "environmental_impact_level": 2,
+        "carbon_footprint_kg_co2_per_m3": 45
       },
-      "erosion_properties": {
+      "erosion_properties_std": {
         "hardness_multiplier": 1.60,
-        "moisture_resistance": 1.50,
+        "moisture_resistance_factor": 1.50,
         "surface_cohesion_kpa": 120,
         "erosion_rate_modifier": 0.45,
-        "crack_resistance": 2.50,
-        "freeze_thaw_resistance": 1.80
+        "crack_resistance_factor": 2.50,
+        "freeze_thaw_resistance_factor": 1.80,
+        "wind_erosion_class": "极强级"
+      },
+      "cross_era_metrics_std": {
+        "cultural_authenticity_score": 0.10,
+        "reversibility_score": 0.45,
+        "environmental_compatibility_score": 0.55,
+        "cost_efficiency_score": 0.72,
+        "construction_efficiency_score": 0.80,
+        "durability_years_est": 80
       }
     },
     "FIBER": {
       "name": "纤维加筋土",
       "era": "现代",
-      "description": "随机分布的合成纤维增强土体抗拉和抗裂性能",
+      "standard_reference": "JGJ/T 221-2010《纤维混凝土应用技术规程》扩展, ASTM D8215-18纤维加筋土标准",
+      "description": "聚丙烯短纤维随机拌合分散，增强土体抗拉和抗裂性，施工便捷",
       "parameters": {
         "compaction_ratio": 0.90,
-        "reinforcement_type": "polypropylene_fiber",
+        "layer_thickness_mm": 200,
+        "reinforcement_type": "polypropylene_staple_fiber",
         "fiber_length_mm": 30,
+        "fiber_diameter_micron": 35,
         "fiber_content_pct": 0.3,
-        "soil_type": "clay_loam",
-        "dry_density_g_cm3": 1.82
+        "soil_type": "粘质粉土",
+        "soil_type_std_code": "ML-CL",
+        "cement_content_pct": 0,
+        "geogrid_usage_pct_per_layer": 0,
+        "dry_density_g_cm3": 1.82,
+        "optimum_moisture_pct": 14,
+        "cost_yuan_per_m3": 320,
+        "construction_difficulty": 1,
+        "reversibility_level": 4,
+        "environmental_impact_level": 2,
+        "carbon_footprint_kg_co2_per_m3": 28
       },
-      "erosion_properties": {
+      "erosion_properties_std": {
         "hardness_multiplier": 1.20,
-        "moisture_resistance": 1.10,
+        "moisture_resistance_factor": 1.10,
         "surface_cohesion_kpa": 85,
         "erosion_rate_modifier": 0.75,
-        "crack_resistance": 1.80,
-        "freeze_thaw_resistance": 1.10
+        "crack_resistance_factor": 1.80,
+        "freeze_thaw_resistance_factor": 1.10,
+        "wind_erosion_class": "强级"
+      },
+      "cross_era_metrics_std": {
+        "cultural_authenticity_score": 0.12,
+        "reversibility_score": 0.65,
+        "environmental_compatibility_score": 0.62,
+        "cost_efficiency_score": 0.82,
+        "construction_efficiency_score": 0.92,
+        "durability_years_est": 50
       }
     },
     "CEMENT": {
       "name": "水泥稳定土",
       "era": "现代",
-      "description": "水泥与土拌合压实，水化反应生成胶凝体，强度高但不可逆",
+      "standard_reference": "JTJ 034-2000《公路路面基层施工技术规范》, GB/T 50123-2019《土工试验方法标准》",
+      "description": "42.5级普通硅酸盐水泥与土拌合压实，水化反应生成钙矾石胶凝体，强度高但不可逆",
       "parameters": {
         "compaction_ratio": 0.95,
-        "reinforcement_type": "cement_stabilization",
+        "layer_thickness_mm": 150,
+        "reinforcement_type": "cement_hydration_gel",
+        "cement_grade": "P.O 42.5",
         "cement_content_pct": 6,
-        "soil_type": "sandy_clay",
-        "dry_density_g_cm3": 1.95
+        "soil_type": "砂质粘土",
+        "soil_type_std_code": "SC",
+        "fiber_content_pct": 0,
+        "geogrid_usage_pct_per_layer": 0,
+        "dry_density_g_cm3": 1.95,
+        "optimum_moisture_pct": 12,
+        "curing_days_std": 28,
+        "cost_yuan_per_m3": 450,
+        "construction_difficulty": 3,
+        "reversibility_level": 1,
+        "environmental_impact_level": 4,
+        "carbon_footprint_kg_co2_per_m3": 120
       },
-      "erosion_properties": {
+      "erosion_properties_std": {
         "hardness_multiplier": 2.20,
-        "moisture_resistance": 1.80,
+        "moisture_resistance_factor": 1.80,
         "surface_cohesion_kpa": 180,
         "erosion_rate_modifier": 0.25,
-        "crack_resistance": 0.90,
-        "freeze_thaw_resistance": 1.50
+        "crack_resistance_factor": 0.90,
+        "freeze_thaw_resistance_factor": 1.50,
+        "wind_erosion_class": "极高级"
+      },
+      "cross_era_metrics_std": {
+        "cultural_authenticity_score": 0.08,
+        "reversibility_score": 0.15,
+        "environmental_compatibility_score": 0.25,
+        "cost_efficiency_score": 0.60,
+        "construction_efficiency_score": 0.55,
+        "durability_years_est": 120
       }
     }
   },
+  "standard_comparison_units": {
+    "erosion_rate": "mm/年",
+    "hardness": "MPa",
+    "cohesion": "kPa",
+    "dry_density": "g/cm³",
+    "compaction": "无量纲（0.8-1.0）",
+    "cost": "元/m³",
+    "carbon_footprint": "kg CO₂/m³",
+    "durability": "年",
+    "score_5dims": "无量纲（0.0-1.0）"
+  },
   "comparison_metrics": {
-    "weights": {
+    "weights_v1_std": {
       "erosion_resistance": 0.30,
       "environmental_compatibility": 0.20,
       "reversibility": 0.15,
       "cost_efficiency": 0.15,
       "cultural_authenticity": 0.20
     },
-    "benefit_criteria": ["erosion_resistance", "environmental_compatibility", "reversibility", "cultural_authenticity"],
-    "cost_criteria": ["cost_efficiency"]
+    "benefit_criteria_std": ["erosion_resistance", "environmental_compatibility", "reversibility", "cultural_authenticity", "construction_efficiency"],
+    "cost_criteria_std": ["cost_efficiency"]
   }
 }

@@ -1426,6 +1426,173 @@ body {
     height: auto;
 }
 
+.btn-small {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-small:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+.mix-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.material-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+}
+
+.material-range-wrap {
+    position: relative;
+    padding: 4px 0;
+}
+
+.material-optimal-tick {
+    position: absolute;
+    top: 0;
+    left: 40%;
+    width: 25%;
+    height: 3px;
+    background: rgba(26,152,80,0.35);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.mix-visual-row {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.mix-pie-wrap {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.9);
+    padding: 6px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+#mix-pie-chart {
+    display: block;
+}
+
+.live-quality-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 8px;
+}
+
+.lq-label {
+    flex-shrink: 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+}
+
+.lq-bar {
+    flex: 1;
+    height: 14px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.lq-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #f46d43, #fdae61, #91cf60, #1a9850);
+    border-radius: 7px;
+    transition: all 0.4s ease;
+}
+
+.lq-bar-text {
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 13px;
+    min-width: 80px;
+    text-align: right;
+}
+
+.mix-sum-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 13px;
+}
+
+.ms-label {
+    color: rgba(255,255,255,0.7);
+}
+
+.dp-name {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.dp-sub {
+    display: block;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+}
+
+.dynasty-preset-info {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.08);
+    border-left: 3px solid #91cf60;
+    border-radius: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+}
+
+.dpi-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 3px;
+    color: #fff;
+}
+
+.dpi-desc {
+    line-height: 1.5;
+}
+
+.dpi-ref {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px dashed rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+}
+
+
 /* ============= 新Feature: 虚拟夯土体验 ============= */
 .virtual-desc {
     background: linear-gradient(135deg, rgba(194, 154, 108, 0.15), rgba(139, 94, 60, 0.15));

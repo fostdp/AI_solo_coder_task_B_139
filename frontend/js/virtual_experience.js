@@ -2,6 +2,20 @@ var VirtualExperienceModule = (function () {
     var presets = null;
     var dynastyPresets = null;
     var currentResult = null;
+    var materialDefaultMap = {};
+    var materialColorMap = {
+        'soil_pct': '#c49a6c',
+        'clay_pct': '#8b5a3c',
+        'sand_pct': '#e8d8a8',
+        'lime_pct': '#d9d9d9',
+        'rice_paste_pct': '#f5e6c8',
+        'straw_pct': '#a67c52',
+        'water_pct': '#6baed6'
+    };
+    var materialLabelMap = {
+        'soil_pct': '黄土', 'clay_pct': '粘土', 'sand_pct': '细砂',
+        'lime_pct': '石灰', 'rice_paste_pct': '糯米汁', 'straw_pct': '麦草', 'water_pct': '水'
+    };
 
     function init() {
         loadPresets();
@@ -12,10 +26,22 @@ var VirtualExperienceModule = (function () {
         axios.get('/api/virtual/presets').then(function (res) {
             presets = res.data.base_materials || {};
             dynastyPresets = res.data.dynasty_presets || {};
+            var nameToKey = {
+                'soil': 'soil_pct', 'clay': 'clay_pct', 'sand': 'sand_pct',
+                'lime': 'lime_pct', 'rice_paste': 'rice_paste_pct',
+                'straw': 'straw_pct', 'water': 'water_pct'
+            };
+            for (var mname in presets) {
+                if (presets.hasOwnProperty(mname) && nameToKey[mname]) {
+                    materialDefaultMap[nameToKey[mname]] = presets[mname].default || 0;
+                }
+            }
             renderMaterialSliders();
             renderTampingOptions();
             renderDynastyPresetButtons();
             updateMixSummary();
+            renderMixPieChart();
+            updateLiveQualityBar();
         }).catch(function (err) {
             console.error('Failed to load presets:', err);
         });
@@ -37,12 +63,17 @@ var VirtualExperienceModule = (function () {
             var defVal = m.default;
             var minVal = m.range[0];
             var maxVal = m.range[1];
+            var color = materialColorMap[key] || '#888';
             html += '<div class="material-slider-row" data-key="' + key + '">' +
                 '<div class="material-slider-label">' +
+                '<span class="material-dot" style="background:' + color + '"></span>' +
                 '<span class="material-name">' + m.name + '</span>' +
                 '<span class="material-unit"><input type="number" class="material-number" data-key="' + key + '" value="' + defVal + '" min="' + minVal + '" max="' + maxVal + '" step="0.5"> ' + m.unit + '</span>' +
                 '</div>' +
+                '<div class="material-range-wrap">' +
                 '<input type="range" class="material-range" data-key="' + key + '" value="' + defVal + '" min="' + minVal + '" max="' + maxVal + '" step="0.5">' +
+                '<div class="material-optimal-tick" title="最优区间"></div>' +
+                '</div>' +
                 '<div class="material-range-info"><span>min ' + minVal + '</span><span>max ' + maxVal + '</span></div>' +
                 '</div>';
         }
@@ -70,6 +101,7 @@ var VirtualExperienceModule = (function () {
             if (tamping[key]) {
                 container.innerHTML = '能量: ' + tamping[key].energy_kj_m3 + ' kJ/m³ · 压实系数: ' + tamping[key].compaction_factor + ' · ' + tamping[key].description;
             }
+            updateLiveQualityBar();
         });
         if (tamping['heavy']) {
             container.innerHTML = '能量: ' + tamping['heavy'].energy_kj_m3 + ' kJ/m³ · 压实系数: ' + tamping['heavy'].compaction_factor + ' · ' + tamping['heavy'].description;
@@ -78,18 +110,29 @@ var VirtualExperienceModule = (function () {
 
     function renderDynastyPresetButtons() {
         var container = document.getElementById('dynasty-preset-buttons');
+        var info = document.getElementById('dynasty-preset-info');
         if (!container || !dynastyPresets) return;
         var html = '';
         for (var code in dynastyPresets) {
             if (dynastyPresets.hasOwnProperty(code)) {
                 var d = dynastyPresets[code];
-                html += '<button class="dynasty-preset-btn" data-code="' + code + '">' + d.name + '</button>';
+                html += '<button class="dynasty-preset-btn" data-code="' + code + '">' +
+                    '<span class="dp-name">' + d.name + '</span>' +
+                    '<span class="dp-sub">' + (d.key_metrics ? '压实' + Math.round(d.key_metrics.compaction * 100) + '%' : '') + '</span>' +
+                    '</button>';
             }
         }
         container.innerHTML = html;
         document.querySelectorAll('.dynasty-preset-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                applyDynastyPreset(btn.getAttribute('data-code'));
+                var code = btn.getAttribute('data-code');
+                applyDynastyPreset(code);
+                if (info && dynastyPresets[code]) {
+                    var dp = dynastyPresets[code];
+                    info.innerHTML = '<div class="dpi-title">📖 ' + dp.name + '</div>' +
+                        '<div class="dpi-desc">' + dp.description + '</div>' +
+                        (dp.archaeological_reference ? '<div class="dpi-ref">🏛️ ' + dp.archaeological_reference + '</div>' : '');
+                }
             });
         });
     }
@@ -98,6 +141,16 @@ var VirtualExperienceModule = (function () {
         if (!dynastyPresets || !dynastyPresets[code]) return;
         var mix = dynastyPresets[code].mix;
         var tamping = dynastyPresets[code].tamping;
+        setMixValues(mix);
+        var tampSel = document.getElementById('tamping-preset-select');
+        if (tampSel) tampSel.value = tamping;
+        tampSel.dispatchEvent(new Event('change'));
+        updateMixSummary();
+        renderMixPieChart();
+        updateLiveQualityBar();
+    }
+
+    function setMixValues(mix) {
         for (var k in mix) {
             if (mix.hasOwnProperty(k)) {
                 var slider = document.querySelector('.material-range[data-key="' + k + '"]');
@@ -106,10 +159,6 @@ var VirtualExperienceModule = (function () {
                 if (number) number.value = mix[k];
             }
         }
-        var tampSel = document.getElementById('tamping-preset-select');
-        if (tampSel) tampSel.value = tamping;
-        tampSel.dispatchEvent(new Event('change'));
-        updateMixSummary();
     }
 
     function getCurrentMix() {
@@ -125,11 +174,14 @@ var VirtualExperienceModule = (function () {
     function onMaterialChange(e) {
         var key = e.target.getAttribute('data-key');
         var val = parseFloat(e.target.value);
-        var slider = document.querySelector('.material-range[data-key="' + key + '"]');
-        var number = document.querySelector('.material-number[data-key="' + key + '"]');
-        if (slider) slider.value = val;
-        if (number) number.value = val;
+        if (isNaN(val)) return;
+        var rangeEl = document.querySelector('.material-range[data-key="' + key + '"]');
+        var numEl = document.querySelector('.material-number[data-key="' + key + '"]');
+        if (rangeEl) rangeEl.value = val;
+        if (numEl) numEl.value = val;
         updateMixSummary();
+        renderMixPieChart();
+        updateLiveQualityBar();
     }
 
     function updateMixSummary() {
@@ -138,15 +190,181 @@ var VirtualExperienceModule = (function () {
         var el = document.getElementById('mix-summary');
         if (!el) return;
         var ok = Math.abs(solids - 100) < 5;
+        var water = mix.water_pct;
+        var waterOk = 14 <= water && water <= 18;
         el.innerHTML =
-            '<div>固体材料合计: <b style="color:' + (ok ? '#1a9850' : '#d73027') + '">' + solids.toFixed(1) + '%</b>' +
-            (ok ? ' ✓' : ' (建议接近100%)') + '</div>' +
-            '<div>含水量: ' + mix.water_pct.toFixed(1) + '%</div>';
+            '<div class="mix-sum-row"><span class="ms-label">固体材料合计:</span>' +
+            '<b style="color:' + (ok ? '#1a9850' : '#d73027') + '">' + solids.toFixed(1) + '%</b>' +
+            (ok ? ' ✓ 合理' : ' ⚠ 建议接近100%') + '</div>' +
+            '<div class="mix-sum-row"><span class="ms-label">含水量:</span>' +
+            '<b style="color:' + (waterOk ? '#1a9850' : '#d73027') + '">' + water.toFixed(1) + '%</b>' +
+            (waterOk ? ' ✓ 最优区间' : ' ⚠ 建议14-18%') + '</div>' +
+            '<div class="mix-sum-row"><span class="ms-label">固体偏差:</span>' +
+            '<b>' + (solids > 100 ? '+' : '') + (solids - 100).toFixed(1) + '%</b></div>';
+    }
+
+    function renderMixPieChart() {
+        var canvas = document.getElementById('mix-pie-chart');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var w = canvas.width;
+        var h = canvas.height;
+        var cx = w / 2;
+        var cy = h / 2;
+        var R = Math.min(cx, cy) - 10;
+        ctx.clearRect(0, 0, w, h);
+        var mix = getCurrentMix();
+        var solids = [
+            { key: 'soil_pct', val: mix.soil_pct },
+            { key: 'clay_pct', val: mix.clay_pct },
+            { key: 'sand_pct', val: mix.sand_pct },
+            { key: 'lime_pct', val: mix.lime_pct },
+            { key: 'rice_paste_pct', val: mix.rice_paste_pct },
+            { key: 'straw_pct', val: mix.straw_pct }
+        ];
+        var total = 0;
+        solids.forEach(function (s) { total += s.val; });
+        if (total < 0.1) total = 1;
+        var startAngle = -Math.PI / 2;
+        solids.forEach(function (s) {
+            if (s.val <= 0) return;
+            var frac = s.val / total;
+            var endAngle = startAngle + frac * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, R, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = materialColorMap[s.key] || '#999';
+            ctx.fill();
+            if (frac > 0.05) {
+                var midAngle = (startAngle + endAngle) / 2;
+                var lx = cx + R * 0.65 * Math.cos(midAngle);
+                var ly = cy + R * 0.65 * Math.sin(midAngle);
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText((frac * 100).toFixed(0) + '%', lx, ly);
+            }
+            startAngle = endAngle;
+        });
+        ctx.beginPath();
+        ctx.arc(cx, cy, R * 0.45, 0, 2 * Math.PI);
+        ctx.fillStyle = '#f7f5f0';
+        ctx.fill();
+        ctx.fillStyle = '#5a3e28';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('固体配比', cx, cy - 6);
+        ctx.font = '12px sans-serif';
+        ctx.fillStyle = '#8b5a3c';
+        ctx.fillText(total.toFixed(0) + '%', cx, cy + 12);
+    }
+
+    function updateLiveQualityBar() {
+        var fill = document.getElementById('lq-bar-fill');
+        var txt = document.getElementById('lq-bar-text');
+        if (!fill || !txt) return;
+        var mix = getCurrentMix();
+        var score = estimateLiveQuality(mix);
+        var pct = Math.max(0, Math.min(100, score * 100));
+        var color = '#d73027';
+        if (score >= 0.85) color = '#1a9850';
+        else if (score >= 0.70) color = '#91cf60';
+        else if (score >= 0.50) color = '#fdae61';
+        else if (score >= 0.30) color = '#f46d43';
+        fill.style.width = pct + '%';
+        fill.style.background = color;
+        var labels = { 0.85: '优', 0.70: '良', 0.50: '中', 0.30: '差' };
+        var lbl = '劣';
+        var thresholds = [0.85, 0.70, 0.50, 0.30];
+        for (var i = 0; i < thresholds.length; i++) {
+            if (score >= thresholds[i]) { lbl = labels[thresholds[i]]; break; }
+        }
+        txt.innerHTML = (score * 100).toFixed(0) + '分 · ' + lbl;
+        txt.style.color = color;
+    }
+
+    function estimateLiveQuality(mix) {
+        var solids = mix.soil_pct + mix.clay_pct + mix.sand_pct + mix.lime_pct + mix.rice_paste_pct + mix.straw_pct;
+        var water = mix.water_pct;
+        var solidsScore = Math.max(0, 1.0 - Math.abs(solids - 100) / 30.0);
+        var waterScore = 0.5;
+        if (14 <= water && water <= 18) waterScore = 1.0;
+        else if (12 <= water && water <= 20) waterScore = 0.75;
+        else if (10 <= water && water <= 22) waterScore = 0.55;
+        var binderScore = Math.min(1.0, (mix.lime_pct * 0.8 + mix.rice_paste_pct * 1.2) / 10.0);
+        var fiberScore = mix.straw_pct > 0.5 ? Math.min(1.0, mix.straw_pct / 5.0) * 0.4 : 0;
+        var tampSel = document.getElementById('tamping-preset-select');
+        var tampVal = tampSel ? tampSel.value : 'heavy';
+        var tampScores = { light: 0.5, medium: 0.7, heavy: 0.88, extreme: 0.95 };
+        var tampScore = tampScores[tampVal] || 0.75;
+        var score = solidsScore * 0.25 + waterScore * 0.25 + binderScore * 0.2 + fiberScore * 0.1 + tampScore * 0.2;
+        return Math.max(0.05, Math.min(0.98, score));
     }
 
     function bindEvents() {
         var btn = document.getElementById('run-evaluate');
         if (btn) btn.addEventListener('click', runEvaluate);
+        var btnReset = document.getElementById('btn-reset-mix');
+        if (btnReset) btnReset.addEventListener('click', actionResetMix);
+        var btnNorm = document.getElementById('btn-normalize-mix');
+        if (btnNorm) btnNorm.addEventListener('click', actionNormalizeMix);
+        var btnQin = document.getElementById('btn-recommend-qin');
+        if (btnQin) btnQin.addEventListener('click', function () { applyDynastyPreset('QIN'); });
+        var btnBal = document.getElementById('btn-recommend-balanced');
+        if (btnBal) btnBal.addEventListener('click', actionRecommendBalanced);
+        document.querySelectorAll('#virtual-wall-height, #virtual-wind-speed').forEach(function (el) {
+            if (el) el.addEventListener('input', updateLiveQualityBar);
+        });
+    }
+
+    function actionResetMix() {
+        setMixValues(materialDefaultMap);
+        updateMixSummary();
+        renderMixPieChart();
+        updateLiveQualityBar();
+    }
+
+    function actionNormalizeMix() {
+        var mix = getCurrentMix();
+        var solids = ['soil_pct', 'clay_pct', 'sand_pct', 'lime_pct', 'rice_paste_pct', 'straw_pct'];
+        var total = 0;
+        solids.forEach(function (k) { total += mix[k]; });
+        if (total < 0.1) { alert('固体材料总量为0，无法归一化'); return; }
+        var factor = 100.0 / total;
+        var presetsData = presets || {};
+        var nameToKey = { 'soil': 'soil_pct', 'clay': 'clay_pct', 'sand': 'sand_pct', 'lime': 'lime_pct', 'rice_paste': 'rice_paste_pct', 'straw': 'straw_pct', 'water': 'water_pct' };
+        solids.forEach(function (k) {
+            var newVal = mix[k] * factor;
+            var rawName = null;
+            for (var nm in nameToKey) {
+                if (nameToKey[nm] === k) { rawName = nm; break; }
+            }
+            if (rawName && presetsData[rawName] && presetsData[rawName].range) {
+                var r = presetsData[rawName].range;
+                newVal = Math.max(r[0], Math.min(r[1], newVal));
+            }
+            mix[k] = Math.round(newVal * 10) / 10;
+        });
+        setMixValues(mix);
+        updateMixSummary();
+        renderMixPieChart();
+        updateLiveQualityBar();
+    }
+
+    function actionRecommendBalanced() {
+        var mix = {
+            soil_pct: 62, clay_pct: 18, sand_pct: 10,
+            lime_pct: 5, rice_paste_pct: 2, straw_pct: 3, water_pct: 16
+        };
+        setMixValues(mix);
+        var tampSel = document.getElementById('tamping-preset-select');
+        if (tampSel) { tampSel.value = 'heavy'; tampSel.dispatchEvent(new Event('change')); }
+        updateMixSummary();
+        renderMixPieChart();
+        updateLiveQualityBar();
     }
 
     function runEvaluate() {
@@ -160,6 +378,8 @@ var VirtualExperienceModule = (function () {
             wall_height_m: wallHeight,
             wind_speed: windSpeed
         };
+        var btn = document.getElementById('run-evaluate');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ 评估中...'; }
         axios.post('/api/virtual/evaluate', payload).then(function (res) {
             currentResult = res.data;
             renderEvaluationResult(res.data);
@@ -167,6 +387,8 @@ var VirtualExperienceModule = (function () {
         }).catch(function (err) {
             console.error('Evaluate failed:', err);
             alert('评估失败：' + (err.response ? err.response.data.detail : err.message));
+        }).finally(function () {
+            if (btn) { btn.disabled = false; btn.textContent = '🏗️ 开始夯筑评估'; }
         });
     }
 
@@ -213,8 +435,9 @@ var VirtualExperienceModule = (function () {
         var wallBottomY = h * 0.9;
         var grad = ctx.createLinearGradient(wallX, wallTopY, wallX + wallW, wallBottomY);
         var baseR = 196 + (data.hardness_mpa / 5.0) * 30;
-        var baseG = 154 - (data.erosion_rate_mm_per_year) * 20;
+        var baseG = 154 - (data.erosion_rate_mm_per_year / 200) * 30;
         var baseB = 108 + (data.compaction_ratio) * 20;
+        baseG = Math.max(80, Math.min(200, baseG));
         grad.addColorStop(0, 'rgb(' + baseR + ',' + baseG + ',' + baseB + ')');
         grad.addColorStop(1, 'rgb(' + (baseR - 30) + ',' + (baseG - 20) + ',' + (baseB - 10) + ')');
         ctx.fillStyle = grad;
@@ -230,7 +453,7 @@ var VirtualExperienceModule = (function () {
             ctx.lineTo(wallX + wallW, ly);
             ctx.stroke();
         }
-        var erosionPct = Math.min(0.8, data.erosion_rate_mm_per_year / 2.0);
+        var erosionPct = Math.min(0.8, data.erosion_rate_mm_per_year / 600);
         ctx.fillStyle = 'rgba(139,69,19,' + (0.1 + erosionPct * 0.3) + ')';
         for (var ei = 0; ei < 50; ei++) {
             var ex = wallX + Math.random() * wallW;
@@ -252,6 +475,9 @@ var VirtualExperienceModule = (function () {
         init: init,
         runEvaluate: runEvaluate,
         loadPresets: loadPresets,
-        applyDynastyPreset: applyDynastyPreset
+        applyDynastyPreset: applyDynastyPreset,
+        actionResetMix: actionResetMix,
+        actionNormalizeMix: actionNormalizeMix,
+        actionRecommendBalanced: actionRecommendBalanced
     };
 })();
