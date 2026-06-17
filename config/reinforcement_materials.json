@@ -1,0 +1,134 @@
+{
+  "criteria_defaults": {
+    "weights": {
+      "penetration_depth": 0.25,
+      "durability_years": 0.25,
+      "cost_per_sqm": 0.20,
+      "construction_difficulty": 0.10,
+      "environmental_impact": 0.10,
+      "durability_confidence": 0.10
+    },
+    "benefit_criteria": ["penetration_depth", "durability_years", "durability_confidence"],
+    "cost_criteria": ["cost_per_sqm", "construction_difficulty", "environmental_impact"]
+  },
+  "accelerated_aging": {
+    "gas_constant": 8.314,
+    "ref_temperature_c": 25.0,
+    "acc_temperature_c": 60.0,
+    "acc_humidity_pct": 90.0,
+    "ref_humidity_pct": 60.0,
+    "acc_cycles_per_day": 2,
+    "ref_cycles_per_year": 50,
+    "humidity_acceleration_n": 2.5,
+    "aging_test_duration_days": 90,
+    "failure_threshold_retention": 0.5,
+    "confidence_coefficient": 1.96,
+    "coefficient_of_variation": 0.2
+  },
+  "materials": {
+    "TEOS-01": {
+      "name": "硅酸乙酯",
+      "name_zh": "硅酸乙酯",
+      "activation_energy_kj_mol": 65.0,
+      "penetration_coefficients": {
+        "alpha": 0.75,
+        "beta": 0.02,
+        "gamma": 0.15
+      },
+      "strength_retention_90d": 0.85,
+      "base_penetration_mm": 10.0,
+      "cost_per_sqm_range": [280, 450],
+      "construction_difficulty": 3,
+      "environmental_impact": 0.3,
+      "reversibility_score": 3,
+      "appearance_match": 0.85,
+      "application_methods": ["刷涂", "喷涂", "浸渍"]
+    },
+    "TEOS-02": {
+      "name": "改性硅酸乙酯",
+      "name_zh": "改性硅酸乙酯",
+      "activation_energy_kj_mol": 58.0,
+      "penetration_coefficients": {
+        "alpha": 0.68,
+        "beta": 0.025,
+        "gamma": 0.18
+      },
+      "strength_retention_90d": 0.90,
+      "base_penetration_mm": 10.0,
+      "cost_per_sqm_range": [350, 550],
+      "construction_difficulty": 4,
+      "environmental_impact": 0.25,
+      "reversibility_score": 2,
+      "appearance_match": 0.90,
+      "application_methods": ["刷涂", "喷涂"]
+    },
+    "GLU-01": {
+      "name": "糯米灰浆",
+      "name_zh": "糯米灰浆",
+      "activation_energy_kj_mol": 52.0,
+      "penetration_coefficients": {
+        "alpha": 0.45,
+        "beta": 0.015,
+        "gamma": 0.10
+      },
+      "strength_retention_90d": 0.75,
+      "base_penetration_mm": 10.0,
+      "cost_per_sqm_range": [120, 220],
+      "construction_difficulty": 2,
+      "environmental_impact": 0.1,
+      "reversibility_score": 5,
+      "appearance_match": 0.95,
+      "application_methods": ["抹面", "注浆"]
+    },
+    "GLU-02": {
+      "name": "改性糯米灰浆",
+      "name_zh": "改性糯米灰浆",
+      "activation_energy_kj_mol": 55.0,
+      "penetration_coefficients": {
+        "alpha": 0.52,
+        "beta": 0.018,
+        "gamma": 0.12
+      },
+      "strength_retention_90d": 0.80,
+      "base_penetration_mm": 10.0,
+      "cost_per_sqm_range": [180, 320],
+      "construction_difficulty": 3,
+      "environmental_impact": 0.12,
+      "reversibility_score": 4,
+      "appearance_match": 0.92,
+      "application_methods": ["抹面", "注浆", "刷涂"]
+    },
+    "COM-01": {
+      "name": "复合加固剂",
+      "name_zh": "复合加固剂",
+      "activation_energy_kj_mol": 60.0,
+      "penetration_coefficients": {
+        "alpha": 0.60,
+        "beta": 0.022,
+        "gamma": 0.14
+      },
+      "strength_retention_90d": 0.82,
+      "base_penetration_mm": 10.0,
+      "cost_per_sqm_range": [220, 380],
+      "construction_difficulty": 3,
+      "environmental_impact": 0.20,
+      "reversibility_score": 3,
+      "appearance_match": 0.88,
+      "application_methods": ["喷涂", "注浆"]
+    }
+  },
+  "erosion_severity_map": {
+    "low": {
+      "depth_multiplier": 0.7,
+      "target_criteria_min": 0.6
+    },
+    "medium": {
+      "depth_multiplier": 1.0,
+      "target_criteria_min": 0.7
+    },
+    "high": {
+      "depth_multiplier": 1.4,
+      "target_criteria_min": 0.85
+    }
+  }
+}
