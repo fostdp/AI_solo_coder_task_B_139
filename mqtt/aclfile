@@ -1,0 +1,22 @@
+# ============================================
+# Mosquitto 访问控制列表 (ACL)
+# wall_monitor    —— 后端服务：读写告警主题
+# frontend_client —— 前端页面：仅读取告警主题
+# ============================================
+
+# 后端服务：可发布/订阅所有墙段告警
+user wall_monitor
+topic readwrite wall/alert/#
+topic readwrite wall/stream/#
+topic readwrite $SYS/#
+
+# 前端客户端：只能读取告警(不能发)
+user frontend_client
+topic read wall/alert/#
+topic read wall/stream/#
+topic read $SYS/broker/uptime
+topic read $SYS/broker/clients/connected
+
+# 匿名用户（若允许匿名）：全部拒绝
+pattern deny $SYS/#
+pattern deny #
