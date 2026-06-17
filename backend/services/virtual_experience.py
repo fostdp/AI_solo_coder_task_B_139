@@ -104,8 +104,12 @@ class VirtualExperienceService:
         compaction_factor = tamping.get("compaction_factor", 0.9)
         moisture_resistance = 1.0 + (mix_dict.get("lime_pct", 0) * 0.02 + mix_dict.get("rice_paste_pct", 0) * 0.03)
         compaction_ratio = min(0.99, 0.8 * compaction_factor * water_mod)
-        sim_res = erosion_simulator.simulate_two_phase_flow(wind_speed, 180, wall_height_m, mix_dict.get("water_pct", 16))
-        base_sim_rate = sim_res.get("avg_erosion_rate_mm_per_year", 0.5)
+        sim_duration = 1.0
+        sim_res = erosion_simulator.simulate_two_phase_flow(wind_speed, 180, wall_height_m, mix_dict.get("water_pct", 16), duration_hours=sim_duration)
+        avg_depth_mm = sim_res.get("avg_erosion_depth_mm", 0.0)
+        base_sim_rate = avg_depth_mm * (365.0 * 24.0 / sim_duration)
+        if base_sim_rate < 0.05:
+            base_sim_rate = 0.5
         final_erosion = max(0.05, base_sim_rate * (erosion_rate / 0.5) / moisture_resistance * (1.0 - compaction_ratio * 0.3))
         final_hardness = max(0.5, hardness * compaction_ratio * 2.0)
         final_cohesion = max(10, cohesion * compaction_ratio)

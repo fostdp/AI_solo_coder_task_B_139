@@ -41,8 +41,31 @@ class PlantRootSimulationService:
     def simulate_plant_protection(self, plant_codes: List[str], coverage_pct: float,
                                   wall_height_m: float, wind_speed: float,
                                   soil_moisture: float, season: str = "summer") -> Dict[str, Any]:
-        sim_res = erosion_simulator.simulate_two_phase_flow(wind_speed, 180, wall_height_m, soil_moisture)
-        baseline_erosion = sim_res.get("avg_erosion_rate_mm_per_year", 0.5)
+        sim_duration = 1.0
+        sim_res = erosion_simulator.simulate_two_phase_flow(wind_speed, 180, wall_height_m, soil_moisture, duration_hours=sim_duration)
+        avg_depth_mm = sim_res.get("avg_erosion_depth_mm", 0.0)
+        baseline_erosion = avg_depth_mm * (365.0 * 24.0 / sim_duration)
+        if baseline_erosion < 0.01:
+            baseline_erosion = 0.5
+
+        if coverage_pct <= 0 or not plant_codes:
+            return {
+                "request": {
+                    "plant_codes": plant_codes,
+                    "coverage_pct": coverage_pct,
+                    "wall_height_m": wall_height_m,
+                    "wind_speed": wind_speed,
+                    "soil_moisture": soil_moisture,
+                    "season": season
+                },
+                "baseline_erosion_rate": round(float(baseline_erosion), 4),
+                "protected_erosion_rate": round(float(baseline_erosion), 4),
+                "total_reduction_pct": 0.0,
+                "individual_effects": [],
+                "combined_bonus_pct": 0.0
+            }
+        if coverage_pct > 95:
+            coverage_pct = 95.0
         plants = self.config.get("plant_species", {})
         individual_effects = []
         total_wind_reduction = 0.0

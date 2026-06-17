@@ -256,7 +256,8 @@ class WindErosionSimulator:
         # 分离区风蚀增强（反向流和涡旋）
         if separation_zone:
             # 分离区内湍流强度显著增加
-            separation_factor = 1.0 + self.TURBULENCE_ENHANCEMENT * (tke / (0.5 * wind_speed**2))
+            wind_speed_safe = max(wind_speed, 0.1)
+            separation_factor = 1.0 + self.TURBULENCE_ENHANCEMENT * (tke / (0.5 * wind_speed_safe**2))
             enhancement = max(enhancement, separation_factor)
         
         # 墙角涡流增强（三维涡结构增加颗粒撞击）

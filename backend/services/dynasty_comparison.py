@@ -29,9 +29,13 @@ class DynastyComparisonService:
     def compare_dynasties(self, dynasty_codes: List[str], wind_speed: float, soil_moisture: float,
                           duration_hours: float, climate_scenario: str = None) -> Dict[str, Any]:
         ws, sm, scenario_info = self._apply_climate_scenario(climate_scenario, wind_speed, soil_moisture)
-        sim_res = erosion_simulator.simulate_two_phase_flow(ws, 180, 2.5, sm)
-        base_erosion_rate = sim_res.get("avg_erosion_rate_mm_per_year", 0.5)
-        base_max_depth = sim_res.get("max_erosion_depth_mm", 0.1)
+        sim_duration = 1.0
+        sim_res = erosion_simulator.simulate_two_phase_flow(ws, 180, 2.5, sm, duration_hours=sim_duration)
+        avg_depth_mm = sim_res.get("avg_erosion_depth_mm", 0.0)
+        base_erosion_rate = avg_depth_mm * (365.0 * 24.0 / sim_duration)
+        base_max_depth = sim_res.get("max_erosion_depth_mm", 0.0)
+        if base_erosion_rate < 0.01:
+            base_erosion_rate = 0.01
         dynasties = self.dynasty_config.get("dynasties", {})
         results = []
         for code in dynasty_codes:
