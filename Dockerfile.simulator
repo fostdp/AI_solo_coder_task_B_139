@@ -1,0 +1,43 @@
+FROM python:3.11-slim AS simulator
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r simuser && useradd -r -g simuser simuser
+
+COPY requirements.txt .
+RUN pip install --upgrade pip \
+    && pip install numpy httpx pydantic pydantic-settings python-dotenv \
+    && rm -rf /root/.cache/pip
+
+COPY simulator ./simulator
+
+RUN chown -R simuser:simuser /app
+USER simuser
+
+ENV SIM_API_URL=http://api:8000 \
+    SIM_INTERVAL=3600 \
+    SIM_SEGMENTS=8 \
+    SIM_WIND_SPEED_MIN=2.0 \
+    SIM_WIND_SPEED_MAX=12.0 \
+    SIM_WIND_SPEED_BIAS=0.0 \
+    SIM_MOISTURE_BASE=5.0 \
+    SIM_MOISTURE_BIAS=0.0 \
+    SIM_MOISTURE_VAR_MIN=0.5 \
+    SIM_MOISTURE_VAR_MAX=1.5 \
+    SIM_SEASONAL=true \
+    SIM_DIURNAL=true \
+    SIM_GENERATE_HISTORICAL=true \
+    SIM_HISTORICAL_DAYS=30
+
+HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=3 \
+    CMD pgrep -f sensor_simulator.py > /dev/null || exit 1
+
+CMD ["python", "-m", "simulator.sensor_simulator"]
